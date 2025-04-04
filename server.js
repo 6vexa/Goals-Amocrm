@@ -27,7 +27,7 @@ app.get('/users', async (req, res) => {
   }
 });
 
-app.get('/deals', async (req, res) => {
+app.get('/leads', async (req, res) => {
   t  try {
     const response = await axios.get(`https://${SUBDOMAIN}.amocrm.ru/api/v4/leads`, {
       headers: {
