@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -86,28 +86,40 @@
 <script>
   const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjBlNWI5MDc0MGNhZmUyMWZmNzlkNTBmOGI4OTEzZjU5ZDYxNjI2YWRjYTU4ZmJhMmNiZWUwMDQzZDkyOTdhMDM2ZTMzNTJiY2EyMDRjOGNiIn0.eyJhdWQiOiJkNDdkNzYxNS0zNDBhLTQ1ODYtOWYwMS0wMjJjODA5ZTNiMTgiLCJqdGkiOiIwZTViOTA3NDBjYWZlMjFmZjc5ZDUwZjhiODkxM2Y1OWQ2MTYyNmFkY2E1OGZiYTJjYmVlMDA0M2Q5Mjk3YTAzNmUzMzUyYmNhMjA0YzhjYiIsImlhdCI6MTc0Mzc1MzA0MywibmJmIjoxNzQzNzUzMDQzLCJleHAiOjE3NDYwNTc2MDAsInN1YiI6IjExODI5NDAyIiwiZ3JhbnRfdHlwZSI6IiIsImFjY291bnRfaWQiOjMyMzMwNzc0LCJiYXNlX2RvbWFpbiI6ImFtb2NybS5ydSIsInZlcnNpb24iOjIsInNjb3BlcyI6WyJjcm0iLCJmaWxlcyIsImZpbGVzX2RlbGV0ZSIsIm5vdGlmaWNhdGlvbnMiLCJwdXNoX25vdGlmaWNhdGlvbnMiXSwiaGFzaF91dWlkIjoiMzllYTI5NzYtMDU4Mi00ZGY4LWI5NWUtYzFiOWQ5ZWQ0NzcyIiwiYXBpX2RvbWFpbiI6ImFwaS1iLmFtb2NybS5ydSJ9.A_w92KFKZDuAdR7E7RcD8_egjS21TppaaAMaVag9bpEec58cuGgNr2CjvFInILjOPJpQd4JNpZhxERbPhW9nRpZMMPiZBg7uzB4Fd6nwB6dFV89Z9ogI4QL0LPBtfVTvG-3W9le5wsBWLIGirrgpEV7Rwce6T19WwQY35TRgPkp-kynprOnkX4_bw09BMUSjhpw57ejOdBrVL0l3zbKF3rpKuy5dzeTjGvT6_Q7zTHvk5caFOaqVex6d4IiH341YwfvJAKmQJQ4MnbYFvr1vYRyCiLSbEGxm0ZqBJgt7BDCFoFrbpqSRCOVv0WYcFNL-NS_wL-2XpRLUDi0ZM1zeig';  // Токен доступа для AmoCRM API
 
-  // Функция для получения сделок из AmoCRM
- async function getDeals() {
+  async function getLeads() {
   const url = 'https://goals-amocrm.onrender.com/leads';  // Фильтруем по статусу "успешно реализовано"
 
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
-    }
-  });
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
 
-  const deals = await response.json();
-  console.log(deals); // Логируем, чтобы проверить, что пришло
-  return deals;
+    if (!response.ok) {
+      console.error('Ошибка при получении лидов:', response.statusText);
+      return [];
+    }
+
+    const data = await response.json();
+    console.log('Leads:', data);  // Логируем весь ответ
+
+    // Проверяем, что данные содержат массив лидов в _embedded.leads
+    if (data._embedded && Array.isArray(data._embedded.leads)) {
+      return data._embedded.leads;  // Возвращаем массив лидов
+    } else {
+      console.error('Не удалось найти лиды в ответе:', data);
+      return [];
+    }
+  } catch (error) {
+    console.error('Произошла ошибка при запросе к API:', error);
+    return [];
+  }
 }
 
-    const deals = await response.json();
-    return deals;
-  }
-
-  // Функция для получения списка сотрудников
+    // Функция для получения списка сотрудников
   async function getEmployees() {
     const response = await fetch('https://goals-amocrm.onrender.com/users' , {
       method: 'GET',
@@ -129,22 +141,40 @@
     });
   }
 
-  // Фильтрация сделок по сотруднику
-  function filterDealsByEmployee(deals, employeeId) {
-    return deals.filter(deal => deal.responsible_user_id === employeeId);
-  }
+    // Фильтрация лидов по сотруднику
+function filterLeadsByEmployee(leads, employeeId) {
+  console.log('Лиды перед фильтрацией:', leads);  // Логируем все лиды перед фильтрацией
+  console.log('employeeId:', employeeId);  // Логируем выбранного сотрудника
+
+  const filteredLeads = leads.filter(lead => {
+    console.log('lead.responsible_user_id:', lead.responsible_user_id);  // Логируем ответственного за сделку
+    return lead.responsible_user_id === parseInt(employeeId);  // Преобразуем employeeId в число
+  });
+
+  console.log('Отфильтрованные лиды:', filteredLeads);  // Логируем отфильтрованные лиды
+  return filteredLeads;
+}
+
 
   // Расчёт прогресса
-  function calculateProgress(deals, targetSales) {
+  function calculateProgress(leads, targetSales) {
     let totalSales = 0;
-    deals.forEach(deal => {
-      const kgSold = deal.custom_fields_values.find(field => field.field_id === 915507).values[0].value;
+    leads.forEach(lead => {
+      // Проверка на существование custom_fields_values
+      const customFields = lead.custom_fields_values || [];
+      console.log('custom_fields_values for lead:', customFields); // Логируем custom_fields_values
+
+      // Найдём поле с ID 915507 (для примера это поле с количеством проданных товаров)
+      const kgSoldField = customFields.find(field => field.field_id === 915507);
+      const kgSold = kgSoldField ? kgSoldField.values[0].value : 0; // Получаем значение или 0, если данных нет
+      console.log('kgSold:', kgSold); // Логируем значение проданных товаров
+
       totalSales += parseFloat(kgSold) || 0;
     });
 
     // Вычисление прогресса
     const progress = (totalSales / targetSales) * 100;
-    return progress > 100 ? 100 : progress; // Прогресс ограничен 100%
+    return Math.min(progress, 100); // Прогресс ограничен 100%
   }
 
   // Обновление виджета
@@ -152,21 +182,37 @@
     const employeeId = document.getElementById('employee').value;
     const targetSales = parseFloat(document.getElementById('targetSales').value);
 
-    // Получение сделок
-    const deals = await getDeals();
-    const filteredDeals = filterDealsByEmployee(deals, employeeId);
+    console.log('employeeId:', employeeId);
+    console.log('targetSales:', targetSales);
+
+    // Проверка на пустые или некорректные данные
+    if (!employeeId || isNaN(targetSales) || targetSales <= 0) {
+      console.error('Неверные данные для обновления виджета');
+      alert('Пожалуйста, выберите сотрудника и введите правильную цель продаж.');
+      return;
+    }
+
+    // Получение лидов
+    const leads = await getLeads();
+    const filteredLeads = filterLeadsByEmployee(leads, employeeId);
+
+    if (filteredLeads.length === 0) {
+      console.log('Нет лидов для выбранного сотрудника');
+    }
 
     // Расчёт прогресса
-    const progress = calculateProgress(filteredDeals, targetSales);
-    const totalSales = filteredDeals.reduce((acc, deal) => {
-      const kgSold = deal.custom_fields_values.find(field => field.field_id === 915507).values[0].value;
+    const progress = calculateProgress(filteredLeads, targetSales);
+    const totalSales = filteredLeads.reduce((acc, lead) => {
+      const customFields = lead.custom_fields_values || [];
+      const kgSoldField = customFields.find(field => field.field_id === 915507);
+      const kgSold = kgSoldField ? kgSoldField.values[0].value : 0;
       return acc + (parseFloat(kgSold) || 0);
     }, 0);
 
     // Обновление UI
-    document.getElementById('progress-fill').style.width = progress + '%';
-    document.getElementById('totalSales').innerText = totalSales;
-    document.getElementById('progressPercentage').innerText = progress.toFixed(2) + '%';
+    document.getElementById('progress-fill').style.width = `${progress}%`;
+    document.getElementById('totalSales').innerText = totalSales.toFixed(2);
+    document.getElementById('progressPercentage').innerText = `${progress.toFixed(2)}%`;
   }
 
   // Загружаем сотрудников при инициализации
