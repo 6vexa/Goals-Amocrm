@@ -27,6 +27,24 @@ app.get('/users', async (req, res) => {
   }
 });
 
+app.get('/deals', async (req, res) => {
+  try {
+    // Запрос к AmoCRM API для получения сделок
+    const response = await axios.get('https://a002mp.amocrm.ru/api/v4/deals?filter[status]=4', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Отправка данных на фронтенд
+    res.json(response.data);
+  } catch (error) {
+    console.error('Ошибка при получении сделок:', error);
+    res.status(500).send('Ошибка при получении сделок');
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Proxy server running on port ${PORT}`);
 });
