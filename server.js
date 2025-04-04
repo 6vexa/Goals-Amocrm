@@ -28,16 +28,13 @@ app.get('/users', async (req, res) => {
 });
 
 app.get('/deals', async (req, res) => {
-  try {
-    // Запрос к AmoCRM API для получения сделок
-    const response = await axios.get('https://a002mp.amocrm.ru/api/v4/deals?filter[status]=4', {
+  t  try {
+    const response = await axios.get(`https://${SUBDOMAIN}.amocrm.ru/api/v4/leads?filter[status]=4`, {
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${ACCESS_TOKEN}`
       }
     });
 
-    // Отправка данных на фронтенд
     res.json(response.data);
   } catch (error) {
     console.error('Ошибка при получении сделок:', error);
