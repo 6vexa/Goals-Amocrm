@@ -28,7 +28,7 @@ app.get('/users', async (req, res) => {
 });
 
 app.get('/leads', async (req, res) => {
-  t  try {
+   try {
     const response = await axios.get(`https://${SUBDOMAIN}.amocrm.ru/api/v4/leads`, {
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`
