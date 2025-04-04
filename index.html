@@ -88,7 +88,7 @@
 
   // Функция для получения сделок из AmoCRM
   async function getDeals() {
-    const url = 'https://a002mp.amocrm.ru/api/v4/deals?filter[status]=4';  // Фильтруем по статусу "успешно реализовано"
+    const url = 'https://goals-amocrm.onrender.com/leads';  // Фильтруем по статусу "успешно реализовано"
 
     const response = await fetch(url, {
       method: 'GET',
