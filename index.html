@@ -87,16 +87,21 @@
   const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjBlNWI5MDc0MGNhZmUyMWZmNzlkNTBmOGI4OTEzZjU5ZDYxNjI2YWRjYTU4ZmJhMmNiZWUwMDQzZDkyOTdhMDM2ZTMzNTJiY2EyMDRjOGNiIn0.eyJhdWQiOiJkNDdkNzYxNS0zNDBhLTQ1ODYtOWYwMS0wMjJjODA5ZTNiMTgiLCJqdGkiOiIwZTViOTA3NDBjYWZlMjFmZjc5ZDUwZjhiODkxM2Y1OWQ2MTYyNmFkY2E1OGZiYTJjYmVlMDA0M2Q5Mjk3YTAzNmUzMzUyYmNhMjA0YzhjYiIsImlhdCI6MTc0Mzc1MzA0MywibmJmIjoxNzQzNzUzMDQzLCJleHAiOjE3NDYwNTc2MDAsInN1YiI6IjExODI5NDAyIiwiZ3JhbnRfdHlwZSI6IiIsImFjY291bnRfaWQiOjMyMzMwNzc0LCJiYXNlX2RvbWFpbiI6ImFtb2NybS5ydSIsInZlcnNpb24iOjIsInNjb3BlcyI6WyJjcm0iLCJmaWxlcyIsImZpbGVzX2RlbGV0ZSIsIm5vdGlmaWNhdGlvbnMiLCJwdXNoX25vdGlmaWNhdGlvbnMiXSwiaGFzaF91dWlkIjoiMzllYTI5NzYtMDU4Mi00ZGY4LWI5NWUtYzFiOWQ5ZWQ0NzcyIiwiYXBpX2RvbWFpbiI6ImFwaS1iLmFtb2NybS5ydSJ9.A_w92KFKZDuAdR7E7RcD8_egjS21TppaaAMaVag9bpEec58cuGgNr2CjvFInILjOPJpQd4JNpZhxERbPhW9nRpZMMPiZBg7uzB4Fd6nwB6dFV89Z9ogI4QL0LPBtfVTvG-3W9le5wsBWLIGirrgpEV7Rwce6T19WwQY35TRgPkp-kynprOnkX4_bw09BMUSjhpw57ejOdBrVL0l3zbKF3rpKuy5dzeTjGvT6_Q7zTHvk5caFOaqVex6d4IiH341YwfvJAKmQJQ4MnbYFvr1vYRyCiLSbEGxm0ZqBJgt7BDCFoFrbpqSRCOVv0WYcFNL-NS_wL-2XpRLUDi0ZM1zeig';  // Токен доступа для AmoCRM API
 
   // Функция для получения сделок из AmoCRM
-  async function getDeals() {
-    const url = 'https://goals-amocrm.onrender.com/leads';  // Фильтруем по статусу "успешно реализовано"
+ async function getDeals() {
+  const url = 'https://goals-amocrm.onrender.com/leads';  // Фильтруем по статусу "успешно реализовано"
 
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
-    });
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const deals = await response.json();
+  console.log(deals); // Логируем, чтобы проверить, что пришло
+  return deals;
+}
 
     const deals = await response.json();
     return deals;
