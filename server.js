@@ -29,7 +29,7 @@ app.get('/users', async (req, res) => {
 
 app.get('/deals', async (req, res) => {
   t  try {
-    const response = await axios.get(`https://${SUBDOMAIN}.amocrm.ru/api/v4/leads?filter[status]=4`, {
+    const response = await axios.get(`https://${SUBDOMAIN}.amocrm.ru/api/v4/leads`, {
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`
       }
